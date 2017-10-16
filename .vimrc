@@ -33,6 +33,8 @@ Plugin 'Valloric/YouCompleteMe'
 
 Plugin 'davidhalter/jedi-vim'
 
+" 状态栏
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -53,6 +55,9 @@ set nu
 
 " n模式下p键粘贴系统剪贴板
 set clipboard=unnamedplus
+
+"/ ? 搜索高亮
+set hlsearch 
 
 " 设置缩进参数
 highlight BadWhitespace ctermbg=blue guibg=blue
@@ -209,7 +214,7 @@ func! CompileRunGcc()
     elseif &filetype == 'sh'
         :!time bash %
     elseif &filetype == 'python'
-        exec "!time python3.5 %"
+        exec "!time python2.7 %"
     elseif &filetype == 'html'
         exec "!firefox % &"
     elseif &filetype == 'go'
