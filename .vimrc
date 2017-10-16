@@ -59,6 +59,8 @@ set clipboard=unnamedplus
 "/ ? 搜索高亮
 set hlsearch 
 
+hi Search term=standout ctermfg=14 ctermbg=242 guifg=Cyan guibg=Grey
+
 " 设置缩进参数
 highlight BadWhitespace ctermbg=blue guibg=blue
 
