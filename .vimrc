@@ -36,6 +36,15 @@ Plugin 'davidhalter/jedi-vim'
 " 状态栏
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
+""""""""""""""MarkDown""""""""""""""
+
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+"Plugin 'isnowfy/python-vim-instant-markdown'
+Plugin 'suan/vim-instant-markdown'
+
+""""""""""""""""""""""""""""""""""""
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -68,7 +77,10 @@ au BufNewFile,BufRead *.html
 \ set tabstop=4 |
 \ set textwidth=100 | 
 
-au BufNewFile,BufRead *.py
+au BufNewFile,BufRead *.java,*.cpp
+\ imap { {}<ESC>i<CR><ESC>V<O |
+
+au BufNewFile,BufRead *.py,*.java,*.md,*.cpp
 \ set tabstop=4 |
 \ set softtabstop=4 |
 \ set shiftwidth=4 |
@@ -129,20 +141,37 @@ let g:neocomplcache_enable_at_startup = 1
 let NERDTreeMinimalUI=1 "不显示帮助面板
 
 "##################  语法检测  ##################
-set statusline+=%#warningmsg#
+set statusline+=%#Warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+let g:syntastic_check_on_wq = 0 
 
 let g:syntastic_python_checkers=['pyflakes']
 
+"### 对c++的支持
+"# c11的支持
+
+
 "##################  自动补全  ##################
+" YouCompleteMe
+set runtimepath+=~/.vim/bundle/YouCompleteMe
+let g:ycm_collect_identifiers_from_tags_files = 1           " 开启 YCM 基于标签引擎
+let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释与字符串中的内容也用于补全
+let g:syntastic_ignore_files=[".*\.py$"]
+let g:ycm_seed_identifiers_with_syntax = 1                  " 语法关键字补全
+let g:ycm_complete_in_comments = 1
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_complete_in_comments = 1                          " 在注释输入中也能补全
+let g:ycm_complete_in_strings = 1                           " 在字符串输入中也能补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释和字符串中的文字也会被收入补全
+let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+"let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项
 
 " 自动补全窗口不自动消失
-let g:ycm_autoclose_preview_window_after_completion=1
+"let g:ycm_autoclose_preview_window_after_completion=1
 
 " 解决YCM的Tab冲突
 let g:ycm_key_list_select_completion = ['j']
@@ -201,6 +230,15 @@ endf
 
 " 快速运行
 map <F5> :call CompileRunGcc()<CR>
+map <F4> :call CompileRunGcc_py3()<CR>
+
+
+func! CompileRunGcc_py3()
+    exec "w"
+    if &filetype == 'python'
+        exec "!time python3.5 %"
+    endif
+endfunc
 
 func! CompileRunGcc()
     exec "w"
