@@ -71,14 +71,16 @@ set hlsearch
 hi Search term=standout ctermfg=14 ctermbg=242 guifg=Cyan guibg=Grey
 
 " 设置缩进参数
-highlight BadWhitespace ctermbg=blue guibg=blue
 
 au BufNewFile,BufRead *.html
 \ set tabstop=4 |
 \ set textwidth=100 | 
 
 au BufNewFile,BufRead *.java,*.cpp
-\ imap { {}<ESC>i<CR><ESC>V<O |
+\ imap { {}<ESC>i<CR><CR><up><Tab>|
+
+au BufNewFile,BufRead *md
+\ imap < <><LEFT>|
 
 au BufNewFile,BufRead *.py,*.java,*.md,*.cpp
 \ set tabstop=4 |
@@ -89,15 +91,15 @@ au BufNewFile,BufRead *.py,*.java,*.md,*.cpp
 \ set autoindent |
 \ set fileformat=unix |
 
-au BufNewFile,BufRead *.js, *.html, *.css
+au BufNewFile,BufRead *.js,*.html,*.css
 \ set tabstop=2 |
 \ set softtabstop=2 |
 \ set shiftwidth=2 |
 
 " 显示多余空白符
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
-
-"##################  Map  ##################
+highlight BadWhitespace ctermbg=blue guibg=blue 
+au BufNewFile,BufRead *.py 
+\ match BadWhitespace /\s\+$/
 
 
 "##################  Let g:  ##################
@@ -130,8 +132,8 @@ let g:SimpylFold_docstring_preview=1
 "##################  树型目录  ##################
 "NERDTree快捷键
 
-map <F2> :NERDTreeMirror<CR>
-map <F2> :NERDTreeToggle<CR>
+map <F2> :NERDTreeMirror<CR><C-l>
+map <F2> :NERDTreeToggle<CR><C-l>
 " NERDTree.vim
 let g:NERDTreeWinPos="left"
 let g:NERDTreeWinSize=30
@@ -151,9 +153,6 @@ let g:syntastic_check_on_wq = 0
 
 let g:syntastic_python_checkers=['pyflakes']
 
-"### 对c++的支持
-"# c11的支持
-
 
 "##################  自动补全  ##################
 " YouCompleteMe
@@ -171,7 +170,7 @@ let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cp
 "let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项
 
 " 自动补全窗口不自动消失
-"let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_autoclose_preview_window_after_completion=1
 
 " 解决YCM的Tab冲突
 let g:ycm_key_list_select_completion = ['j']
@@ -187,9 +186,9 @@ inoremap { {}<LEFT>
 inoremap " ""<LEFT>
 inoremap ' ''<LEFT>
 
-inoremap ) <C-R>=Matching(')')<CR>
-inoremap ] <C-R>=Matching(']')<CR>
-inoremap } <C-R>=Matching('}')<CR>
+""inoremap ) <C-R>=Matching(')')<CR>
+""inoremap ] <C-R>=Matching(']')<CR>
+""inoremap } <C-R>=Matching('}')<CR>
 
 " Tab跳过右侧匹配符号
 inoremap <Tab> <C-R>=TabSkip()<CR>
@@ -199,7 +198,7 @@ inoremap <BS> <C-R>=DelPair()<CR>
 
 function TabSkip()
     let char = getline('.')[col('.') - 1]
-    if char == '}' || char == ')' || char == ']' || char == ';'|| char == '"' || char == "'"
+    if char=='>' || char=='}' || char==')' || char==']' || char==';'|| char=='"' || char=="'"
         return "\<Right>"
     else
         return "\<Tab>"
@@ -210,7 +209,7 @@ endf
 function DelPair()
     let c1 = getline('.')[col('.') - 2]
     let c2 = getline('.')[col('.') - 1]
-    if c1 == '(' && c2 == ')' || c1 == '[' && c2 == ']' || c1 == '{' && c2 == '}' || c1 == '"' && c2 == '"' || c1 == "'" && c2 == "'" 
+    if c1=='(' && c2==')' || c1=='[' && c2==']' || c1=='{' && c2=='}' || c1=='"' && c2=='"' || c1=="'" && c2=="'" || c1=='<' && c2=='>'
         return "\<Right>\<BS>\<BS>"
     else
         return "\<BS>"
