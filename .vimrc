@@ -1,5 +1,18 @@
 filetype off                  " required
 
+"##################  Plug  #################
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Make sure you use single quotes
+""Plug 'iamcco/mathjax-support-for-mkdp'
+""Plug 'iamcco/markdown-preview.vim'
+
+" Initialize plugin system
+call plug#end()
+"##########################################
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -42,12 +55,12 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 "Plugin 'isnowfy/python-vim-instant-markdown'
 Plugin 'suan/vim-instant-markdown'
-
 """"""""""""""""""""""""""""""""""""
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
 
 "##################  Set  ##################
 " 编码模式
@@ -228,6 +241,7 @@ endf
 
 
 " 快速运行
+inoremap <F5> <ESC>:call CompileRunGcc()<CR>
 map <F5> :call CompileRunGcc()<CR>
 map <F4> :call CompileRunGcc_py3()<CR>
 
