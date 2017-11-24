@@ -1,5 +1,9 @@
 filetype off                  " required
 
+""###############Pathogen###############
+execute pathogen#infect()
+"#######################################"
+"
 "##################  Plug  #################
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
@@ -117,8 +121,12 @@ au BufNewFile,BufRead *.py
 
 "##################  Let g:  ##################
 " 语法高亮
-let python_highlight_all=1
+"let python_highlight_all=1
+let g:solarized_termtrans=1
+syntax enable
 syntax on
+set background=dark
+colorscheme solarized
 
 "##################  窗口分割  ##################
 " 设置打开新窗口在下方，右侧
@@ -242,6 +250,7 @@ endf
 
 " 快速运行
 inoremap <F5> <ESC>:call CompileRunGcc()<CR>
+inoremap <F4> <ESC>:call CompileRunGcc_py3()<CR>
 map <F5> :call CompileRunGcc()<CR>
 map <F4> :call CompileRunGcc_py3()<CR>
 
@@ -287,5 +296,4 @@ let g:jedi#use_splits_not_buffers = "left"
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
 let g:jedi#show_call_signatures = "1"
-
 
