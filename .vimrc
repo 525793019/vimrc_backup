@@ -1,9 +1,5 @@
-filetype off                  " required
+filetype off                  " equired
 
-""###############Pathogen###############
-execute pathogen#infect()
-"#######################################"
-"
 "##################  Plug  #################
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
@@ -93,13 +89,11 @@ au BufNewFile,BufRead *.html
 \ set tabstop=4 |
 \ set textwidth=100 | 
 
-au BufNewFile,BufRead *.java,*.cpp
-\ imap { {}<ESC>i<CR><CR><up><Tab>|
 
 au BufNewFile,BufRead *md
 \ imap < <><LEFT>|
 
-au BufNewFile,BufRead *.py,*.java,*.md,*.cpp
+au BufNewFile,BufRead *.py,*.java,*.md,*.cpp,*.cc
 \ set tabstop=4 |
 \ set softtabstop=4 |
 \ set shiftwidth=4 |
@@ -121,7 +115,6 @@ au BufNewFile,BufRead *.py
 
 "##################  Let g:  ##################
 " 语法高亮
-"let python_highlight_all=1
 let g:solarized_termtrans=1
 syntax enable
 syntax on
@@ -171,24 +164,24 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0 
-
 let g:syntastic_python_checkers=['pyflakes']
 
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
 "##################  自动补全  ##################
 " YouCompleteMe
 set runtimepath+=~/.vim/bundle/YouCompleteMe
+let g:ycm_python_binary_path = '/usr/bin/python3'
 let g:ycm_collect_identifiers_from_tags_files = 1           " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释与字符串中的内容也用于补全
 let g:syntastic_ignore_files=[".*\.py$"]
 let g:ycm_seed_identifiers_with_syntax = 1                  " 语法关键字补全
-let g:ycm_complete_in_comments = 1
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_complete_in_comments = 1                          " 在注释输入中也能补全
 let g:ycm_complete_in_strings = 1                           " 在字符串输入中也能补全
-let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释和字符串中的文字也会被收入补全
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-"let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项
+let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项
 
 " 自动补全窗口不自动消失
 let g:ycm_autoclose_preview_window_after_completion=1
@@ -198,7 +191,8 @@ let g:ycm_key_list_select_completion = ['j']
 let g:ycm_key_list_previous_completion = ['k']
 
 " 跳转定义处
-nnoremap <C-A>  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <F3>  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
 
 " 符号配对
 inoremap ( ()<LEFT>
@@ -211,11 +205,21 @@ inoremap ' ''<LEFT>
 ""inoremap ] <C-R>=Matching(']')<CR>
 ""inoremap } <C-R>=Matching('}')<CR>
 
+" 大括号缩进 
+inoremap <CR> <C-R>=Retract()<CR>
+
+function Retract()
+    let c1 = getline('.')[col('.') - 3]
+    let c2 = getline('.')[col('.') - 2]
+    if c1==')' && c2=='{'
+	return "\<CR>\<CR>\<up>\<Tab>"
+    else
+	return "\<CR>"
+    endif
+endf
+
 " Tab跳过右侧匹配符号
 inoremap <Tab> <C-R>=TabSkip()<CR>
-
-" backspace
-inoremap <BS> <C-R>=DelPair()<CR>
 
 function TabSkip()
     let char = getline('.')[col('.') - 1]
@@ -225,6 +229,9 @@ function TabSkip()
         return "\<Tab>"
     endif
 endf
+
+" backspace
+inoremap <BS> <C-R>=DelPair()<CR>
 
 " 成对删除
 function DelPair()
@@ -267,8 +274,11 @@ func! CompileRunGcc()
     if &filetype == 'c'
         exec "!g++ % -o %<"
         exec "!time ./%<"
+    elseif &filetype == 'cc'
+        exec "!g++ -std=c++11 % -o %<"
+        exec "!time ./%<"
     elseif &filetype == 'cpp'
-        exec "!g++ % -o %<"
+        exec "!g++ -std=c++11 % -o %<"
         exec "!time ./%<"
     elseif &filetype == 'java'
         exec "!javac %"
